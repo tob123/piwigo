@@ -56,9 +56,9 @@ RUN set -ex; \
     apk del --purge build-dependencies
 COPY httpd-pw.conf cis.conf /etc/apache2/conf.d/
 COPY limitexcept /root/
-COPY php-entry.sh /usr/local/bin/
+COPY checkcontainer_install.sh php-entry.sh /usr/local/bin/
 RUN set -ex; \
-    chmod +x /usr/local/bin/php-entry.sh; \
+    chmod +x /usr/local/bin/php-entry.sh /usr/local/bin/checkcontainer_install.sh; \
     APACHECONF=/etc/apache2/httpd.conf; \
     sed -i "s/80/\$\{HTTP_PORT\}/g" /etc/apache2/httpd.conf ; \
     cat /etc/apache2/httpd.conf | grep Listen ; \

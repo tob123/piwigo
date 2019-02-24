@@ -1,0 +1,51 @@
+services:
+  - docker
+env:
+  matrix:
+  - VERSION=2.9.4 LATEST=true
+before_install:
+  - sudo apt-get install -y pwgen
+  - |
+    if docker pull tob123/piwigo:${VERSION}; then
+      echo "docker pull is allowed to fail"
+    fi
+  - docker-compose -f ./ac/docker-compose.yaml up -d
+install:
+  - export DB_PASS_CI=`pwgen -s -N1 20`
+  - export MYSQL_ROOT_PASSWORD_CI=`pwgen -s -N1 20`
+  - docker-compose up -f ./pw/docker-compose.test.yml up -d --build
+  - docker container ls
+  - docker inspect --format="{{json .State.Health.Status}}" pw_piwigo_1
+  - |
+    SUT_HEALTH="notok" && counter=0
+    while [ $SUT_HEALTH != "healthy" ] && [ $counter -le 30 ]; do
+    SUT_HEALTH=$(docker inspect --format="{{json .State.Health.Status}}" pw_piwigo_1 | tr -d '"')
+    sleep 2
+    counter=$(( $counter + 1 ))
+    done
+  - docker inspect --format="{{json .State.Health.Status}}" pw_piwigo_1
+  - docker logs pw_piwigo_1
+  - echo "$DOCKER_HUB_P" | docker login -u "$DOCKER_HUB_U" --password-stdin
+  - docker container ls
+  - docker image ls
+  - bash dockpush.sh
+ 
+script:
+#check whether anchore is up as setup in one of the previous steps
+  - |
+    ANC_HEALTH="notok" && counter=0
+    while [ $ANC_HEALTH != "healthy" ] && [ $counter -le 320 ]; do
+    ANC_HEALTH=$(sudo docker inspect --format="{{json .State.Health.Status}}" ac_anchore-engine_1 | tr -d '"')
+    sleep 2
+    echo waiting for container to come up
+    echo ..
+    echo .....
+    echo $counter
+    counter=$(( $counter + 1 ))
+    done
+  - docker exec ac_anchore-engine_1 anchore-cli image add docker.io/tob123/nextcloud-staging:${VERSION}
+  - docker exec ac_anchore-engine_1 anchore-cli image wait docker.io/tob123/nextcloud-staging:${VERSION}
+  - docker exec ac_anchore-engine_1 anchore-cli evaluate check docker.io/tob123/nextcloud-staging:${VERSION}
+deploy:
+  provider: script
+  script: bash dockcompare.sh
