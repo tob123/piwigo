@@ -69,7 +69,7 @@ PROD_PUSH="false"
 fi
 
 if [[ -n $LATEST_MINOR && -z $LATEST ]]; then
-  MAJOR_TAG=$(echo $VERSION | awk -F. {' print $1'})
+  MAJOR_TAG=$(echo $VERSION | awk -F. {' print $1"."$2'})
   VERSION=${MAJOR_TAG}
   ${AC_EXEC} image add ${STG_REPO}:${VERSION}
   ${AC_EXEC} image wait ${STG_REPO}:${VERSION}
@@ -80,7 +80,7 @@ if [[ -n $LATEST_MINOR && -z $LATEST ]]; then
   fi
 fi
 if [[ -n $LATEST_MINOR && -n $LATEST ]]; then
-  MAJOR_TAG=$(echo $VERSION | awk -F. {' print $1'})
+  MAJOR_TAG=$(echo $VERSION | awk -F. {' print $1"."$2'})
   VERSION=${MAJOR_TAG}
   ${AC_EXEC} image add ${STG_REPO}:${VERSION}
   ${AC_EXEC} image wait ${STG_REPO}:${VERSION}
