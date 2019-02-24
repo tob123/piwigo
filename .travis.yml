@@ -13,7 +13,7 @@ before_install:
 install:
   - export DB_PASS_CI=`pwgen -s -N1 20`
   - export MYSQL_ROOT_PASSWORD_CI=`pwgen -s -N1 20`
-  - docker-compose up -f ./pw/docker-compose.test.yml up -d --build
+  - docker-compose -f ./pw/docker-compose.test.yml up -d --build
   - docker container ls
   - docker inspect --format="{{json .State.Health.Status}}" pw_piwigo_1
   - |
@@ -43,9 +43,9 @@ script:
     echo $counter
     counter=$(( $counter + 1 ))
     done
-  - docker exec ac_anchore-engine_1 anchore-cli image add docker.io/tob123/nextcloud-staging:${VERSION}
-  - docker exec ac_anchore-engine_1 anchore-cli image wait docker.io/tob123/nextcloud-staging:${VERSION}
-  - docker exec ac_anchore-engine_1 anchore-cli evaluate check docker.io/tob123/nextcloud-staging:${VERSION}
+  - docker exec ac_anchore-engine_1 anchore-cli image add docker.io/tob123/piwigo-staging:${VERSION}
+  - docker exec ac_anchore-engine_1 anchore-cli image wait docker.io/tob123/piwigo-staging:${VERSION}
+  - docker exec ac_anchore-engine_1 anchore-cli evaluate check docker.io/tob123/piwigo-staging:${VERSION}
 deploy:
   provider: script
   script: bash dockcompare.sh
