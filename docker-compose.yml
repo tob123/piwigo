@@ -1,0 +1,55 @@
+version: "3"
+services:
+  piwigo:
+    image: tob123/piwigo
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+      args:
+       - PW_VER=$VERSION
+    image: tob123/piwigo:${VERSION}
+    networks:
+      front:
+      back:
+    user: apache
+    environment:
+      - DB_TYPE=mysql
+      - DB_NAME=piwigo
+      - DB_HOST=piwigo-db
+      - DB_USER=piwigo
+      - DB_PASS=test
+      - PW_PASS=test
+    volumes:
+      - ./piw_vols/_data:/piwigo/_data
+      - ./piw_vols/local:/piwigo/local
+      - ./piw_vols/themes:/piwigo/themes
+      - ./piw_vols/template-extension:/piwigo/template-extension
+      - ./piw_vols/plugins:/piwigo/plugins
+      - ./piw_vols/upload:/piwigo/upload
+      - ./piw_vols/galleries:/piwigo/galleries
+      - pw_built:/pw_built
+      - mysqldb:/var/lib/mysql
+    depends_on: 
+      - piwigo-db
+    ports:
+            - 8001:8001
+  piwigo-db:
+    image: mariadb
+    networks:
+      back:
+    environment:
+      - MYSQL_ROOT_PASSWORD=test
+      - MYSQL_DATABASE=piwigo
+      - MYSQL_USER=test
+      - MYSQL_PASSWORD=test
+volumes:
+  pw_built:
+  mysqldb:
+#    healthcheck:
+#      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+#      timeout: 40s
+#      retries: 10
+networks:
+  front:
+  back:
+    internal: true
