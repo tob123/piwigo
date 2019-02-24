@@ -7,7 +7,7 @@ services:
       dockerfile: ./Dockerfile
       args:
        - PW_VER=$VERSION
-    image: tob123/piwigo:${VERSION}
+    image: tob123/piwigo-staging:${VERSION}
     networks:
       front:
       back:
