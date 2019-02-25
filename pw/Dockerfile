@@ -2,6 +2,7 @@ FROM alpine:3.9
 ###
 ARG PW_VER=2.9.4
 ARG PW_URL=https://piwigo.org/download/dlcounter.php?code=
+ARG DROP_FONT_CACHE=true
 ENV HTTP_PORT=8001 \
     PW_DIR=/piwigo \
     PW_SRC=/usr/local/piwigo \
@@ -34,7 +35,11 @@ RUN set -ex; \
 # a health monitor needs curl
     curl \
 # webserver and php
-    php7-apache2
+    php7-apache2; \
+#drop fontcache to allow easier image comparison between staging and prod image during CID tests
+    if [ ${DROP_FONT_CACHE} = "true" ]; \
+      then rm -rf /var/cache/fontconfig; \
+    fi
 RUN set -ex; \
     apk add --no-cache --virtual build-dependencies \
     # this is for downloading
