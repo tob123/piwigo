@@ -1,5 +1,5 @@
 #!/bin/sh
-set -x
+set -ex
 restore_pw_files () {
 if [ ! -f ${PW_DIR}/_data/dummy.txt ]; then
   touch ${PW_DIR}/_data/dummy.txt
@@ -35,7 +35,9 @@ rm /pw_built/*
 gmap_plugin_fix () {
 #workaround for google maps plugin depending on map.php in piwigo directory.
 #see also here: https://github.com/modus75/piwigo-gmaps/issues/2
-sed -i "s/get_root_url().'map';$/get_root_url().'plugins\/rv_gmaps\/map';/" ${PW_DIR}/plugins/rv_gmaps/include/functions.php
+if [ -f ${PW_DIR}/plugins/rv_gmaps/include/functions.php ]; then
+  sed -i "s/get_root_url().'map';$/get_root_url().'plugins\/rv_gmaps\/map';/" ${PW_DIR}/plugins/rv_gmaps/include/functions.php
+fi
 }
 
 if [ ${RESTORE_PW_VOL} = "true" ]; then
@@ -48,6 +50,8 @@ if [ ${GMAP_PLUGIN_FIX} = "true" ]; then
 fi
 #protect database and other config files
 chmod 700 ${PW_DIR}/local/config
-chmod 400 ${PW_DIR}/local/config/database.inc.php
+if [ -f ${PW_DIR}/local/config/database.inc.php ]; then
+  chmod 400 ${PW_DIR}/local/config/database.inc.php
+fi
 
 exec "$@"
