@@ -8,6 +8,7 @@ ENV HTTP_PORT=8001 \
     PW_SRC=/usr/local/piwigo \
     RESTORE_PW_VOL=true \
     GMAP_PLUGIN_FIX=true \
+    SEC_COOKIES=Off
     PW_VERS=$PW_VER
 # install the PHP extensions we need. some parts are documented. others were found by testing.
 RUN set -ex; \
@@ -106,6 +107,8 @@ RUN set -ex; \
 PHPCONF=/etc/php7/php.ini; \
 #hide php version from headers:
 sed -i 's/expose_php = On/expose_php = Off/' $PHPCONF; \
+#make secure cookies configurable as a docker environment variable:
+sed -i 's/\;session.cookie_secure =/session.cookie_secure\ = "${SEC_COOKIES}"/' $PHPCONF; \
 #create directory to store piwigo version. needs to be defined as volume to allow some piwigo files to be upgraded
 mkdir /pw_built; \
 chown apache /pw_built
