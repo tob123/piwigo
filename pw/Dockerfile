@@ -8,7 +8,7 @@ ENV HTTP_PORT=8001 \
     PW_SRC=/usr/local/piwigo \
     RESTORE_PW_VOL=true \
     GMAP_PLUGIN_FIX=true \
-    SEC_COOKIES=Off
+    SEC_COOKIES=Off \
     PW_VERS=$PW_VER
 # install the PHP extensions we need. some parts are documented. others were found by testing.
 RUN set -ex; \
