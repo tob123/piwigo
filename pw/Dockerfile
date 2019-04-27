@@ -1,7 +1,7 @@
 FROM alpine:3.9
 ###
 ARG PW_VER=2.9.5
-ARG PW_URL=https://piwigo.org/download/dlcounter.php?code=
+ARG PW_URL=https://github.com/Piwigo/Piwigo/archive/
 ARG DROP_FONT_CACHE=true
 ENV HTTP_PORT=8001 \
     PW_DIR=/piwigo \
@@ -50,13 +50,13 @@ RUN set -ex; \
     gnupg ;\
     update-ca-certificates ; \
     #no signature check for piwigo zip files. where are they ?
-    curl --output /tmp/piwigo.zip ${PW_URL}${PW_VER} ; \
+    curl -L --output /tmp/piwigo.tar.gz ${PW_URL}${PW_VER}.tar.gz ; \
     mkdir ${PW_DIR} ; \
     mkdir ${PW_SRC} ; \
-    cd / ; \
-    unzip -q /tmp/piwigo.zip ; \
-    rm /tmp/piwigo.zip; \
-    for i in galleries upload plugins themes template-extension local _data; \
+    cd /piwigo ; \
+    tar zxvf /tmp/piwigo.tar.gz --strip 1 ; \
+    rm /tmp/piwigo.tar.gz; \
+    for i in galleries plugins themes template-extension local ; \
       do cp -a ${PW_DIR}/${i} ${PW_SRC}/ ; \
     done; \
     apk del --purge build-dependencies
