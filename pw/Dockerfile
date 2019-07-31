@@ -1,4 +1,4 @@
-FROM alpine:3.9
+FROM alpine:3.10
 ###
 ARG PW_VER=2.9.5
 ARG PW_URL=https://piwigo.org/download/dlcounter.php?code=
