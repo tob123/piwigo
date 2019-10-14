@@ -2,6 +2,7 @@ version: "3"
 services:
   piwigo:
     image: tob123/piwigo
+    container_name: pw_piwigo_1
     build:
       context: .
       dockerfile: ./Dockerfile
