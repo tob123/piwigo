@@ -1,6 +1,6 @@
 FROM alpine:3.10
 ###
-ARG PW_VER=2.9.5
+ARG PW_VER=2.10.1
 ARG PW_URL=https://piwigo.org/download/dlcounter.php?code=
 ARG DROP_FONT_CACHE=true
 ENV HTTP_PORT=8001 \
