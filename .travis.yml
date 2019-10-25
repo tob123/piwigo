@@ -2,7 +2,7 @@ services:
   - docker
 env:
   matrix:
-  - VERSION=2.9.5 LATEST_MINOR=true LATEST=true
+  - VERSION=2.10.1 LATEST_MINOR=true LATEST=true
 before_install:
   - sudo apt-get install -y pwgen
   - |
