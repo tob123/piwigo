@@ -56,7 +56,7 @@ docker push ${PROD_REPO}:latest
 anch_image () {
 if ${AC_EXEC} image add ${PROD_REPO}:${VERSION}; then
   IMAGE_COMPARE=true
-  dock_pull
+#  dock_pull
   anch_content
   anch_diff
   else PROD_PUSH="true"
