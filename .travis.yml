@@ -10,7 +10,7 @@ before_install:
       echo "docker pull is allowed to fail"
     fi
 #  - docker-compose -f ./ac/docker-compose.yaml up -d
-  - pip install anchorecli
+  - pip install --user anchorecli
   - export PATH="$HOME/.local/bin/:$PATH"
 install:
   - export DB_PASS_CI=`pwgen -s -N1 20`
