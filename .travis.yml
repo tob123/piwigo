@@ -1,10 +1,15 @@
+addons:
+  apt:
+    packages:
+      - python3-pip
+      - python3-setuptools
 services:
   - docker
 env:
   matrix:
   - VERSION=2.10.1 LATEST_MINOR=true LATEST=true
 before_install:
-  - sudo apt-get install -y pwgen python3-pip
+  - sudo apt-get install -y pwgen
   - |
     if docker pull tob123/piwigo:${VERSION}; then
       echo "docker pull is allowed to fail"
