@@ -9,7 +9,9 @@ before_install:
     if docker pull tob123/piwigo:${VERSION}; then
       echo "docker pull is allowed to fail"
     fi
-  - docker-compose -f ./ac/docker-compose.yaml up -d
+#  - docker-compose -f ./ac/docker-compose.yaml up -d
+  - pip install anchorecli
+  - export PATH="$HOME/.local/bin/:$PATH"
 install:
   - export DB_PASS_CI=`pwgen -s -N1 20`
   - export MYSQL_ROOT_PASSWORD_CI=`pwgen -s -N1 20`
@@ -32,20 +34,23 @@ install:
  
 script:
 #check whether anchore is up as setup in one of the previous steps
-  - |
-    ANC_HEALTH="notok" && counter=0
-    while [ $ANC_HEALTH != "healthy" ] && [ $counter -le 320 ]; do
-    ANC_HEALTH=$(sudo docker inspect --format="{{json .State.Health.Status}}" ac_anchore-engine_1 | tr -d '"')
-    sleep 2
-    echo waiting for container to come up
-    echo ..
-    echo .....
-    echo $counter
-    counter=$(( $counter + 1 ))
-    done
-  - docker exec ac_anchore-engine_1 anchore-cli image add docker.io/tob123/piwigo-staging:${VERSION}
-  - docker exec ac_anchore-engine_1 anchore-cli image wait docker.io/tob123/piwigo-staging:${VERSION}
-  - docker exec ac_anchore-engine_1 anchore-cli evaluate check docker.io/tob123/piwigo-staging:${VERSION}
+#  - |
+#    ANC_HEALTH="notok" && counter=0
+#    while [ $ANC_HEALTH != "healthy" ] && [ $counter -le 320 ]; do
+#    ANC_HEALTH=$(sudo docker inspect --format="{{json .State.Health.Status}}" ac_anchore-engine_1 | tr -d '"')
+#    sleep 2
+#    echo waiting for container to come up
+#    echo ..
+#    echo .....
+#    echo $counter
+#    counter=$(( $counter + 1 ))
+#    done
+#  - docker exec ac_anchore-engine_1 anchore-cli image add docker.io/tob123/piwigo-staging:${VERSION}
+#  - docker exec ac_anchore-engine_1 anchore-cli image wait docker.io/tob123/piwigo-staging:${VERSION}
+#  - docker exec ac_anchore-engine_1 anchore-cli evaluate check docker.io/tob123/piwigo-staging:${VERSION}
+  - anchore-cli image add docker.io/tob123/piwigo-staging:${VERSION} 
+  - anchore-cli image wait docker.io/tob123/piwigo-staging:${VERSION} 
+  - anchore-cli image evaluate docker.io/tob123/piwigo-staging:${VERSION} 
 deploy:
   provider: script
   script: bash dockcompare.sh

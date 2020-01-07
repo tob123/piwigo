@@ -7,7 +7,8 @@
 # the rest is locally in this script
 PROD_REPO="docker.io/tob123/piwigo"
 STG_REPO="docker.io/tob123/piwigo-staging"
-AC_EXEC="docker exec ac_anchore-engine_1 anchore-cli"
+#AC_EXEC="docker exec ac_anchore-engine_1 anchore-cli"
+AC_EXEC="anchore-cli"
 IMAGE_COMPARE="false"
 PROD_PUSH="false"
 #try to store the variable from travis and restore it later
